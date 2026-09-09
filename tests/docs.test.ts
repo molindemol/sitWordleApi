@@ -38,6 +38,7 @@ describe("OpenAPI spec", () => {
   });
 
   test("lists the live server", () => {
+    expect(openApiSpec.servers.map((s) => s.url)).toContain("https://wordle.svsit.nl");
     expect(openApiSpec.servers.map((s) => s.url)).toContain("https://sit-wordle-api.vercel.app");
   });
 });

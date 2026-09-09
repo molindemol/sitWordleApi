@@ -17,7 +17,10 @@ Opdracht Thijmen: "deploy de backend naar vercel".
 ## 2026-09-09 17:35, tweede productie-deploy (T010 docs)
 `vercel deploy --prod` na commit 5d5dcc0: deployment https://sit-wordle-l3l4qglkw-walter-noot.vercel.app, alias https://sit-wordle-api.vercel.app. Smoke tegen productie 18/18 inclusief /openapi.json en /docs. Rollback: vorige productie-deployment sit-wordle-jhgsstmci (commit 0f512a4 minus docs) via `vercel rollback`.
 
-## Domein wordle.svsit.nl: OPEN
+## Domein wordle.svsit.nl: GEKOPPELD (9 sep 17:05)
+Thijmen zette via het Vercel-dashboard het domein op het project (eigendom bewezen met TXT `_vercel.svsit.nl` = vc-domain-verify) en bij Hostnet twee A-records `wordle.svsit.nl` naar 216.198.79.1 en 64.29.17.1. Een CNAME kon niet: op `wordle.svsit.nl` stond al een null-MX (prioriteit 0, lege waarde), en Hostnet meldt dat als "dubbel CNAME". Beide Hostnet-nameservers en de publieke resolver geven de A-records terug, Vercel config: configuredBy A, misconfigured false. Smoke tegen https://wordle.svsit.nl: zie hieronder.
+
+### Eerdere stand (tot 17:05)
 `vercel domains add wordle.svsit.nl sit-wordle-api` geeft 403 "Not authorized to use wordle.svsit.nl": svsit.nl is in een ander Vercel-team geclaimd (de SIT-site). Nameservers van svsit.nl staan bij Hostnet (ns01/ns02.hostnet.nl). Twee routes voor Thijmen:
 1. Project verplaatsen naar het Vercel-team waar svsit.nl al staat (Settings > General > Transfer), daarna het subdomein toevoegen. Dan regelt Vercel de DNS-instructie voor Hostnet (CNAME wordle naar cname.vercel-dns.com of A 76.76.21.21).
 2. Of in dit team domein-eigendom bewijzen met de TXT-record die Vercel bij het toevoegen via het dashboard toont (_vercel TXT op svsit.nl in Hostnet), daarna CNAME wordle naar cname.vercel-dns.com.

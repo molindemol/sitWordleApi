@@ -1,6 +1,7 @@
 import { MAX_GUESSES, MAX_TEAM_NAME_LENGTH, WORD_LENGTH } from "@/lib/types";
 
-const LIVE_URL = "https://sit-wordle-api.vercel.app";
+const LIVE_URL = "https://wordle.svsit.nl";
+const VERCEL_URL = "https://sit-wordle-api.vercel.app";
 
 type Schema = Record<string, unknown>;
 type Operation = {
@@ -158,7 +159,7 @@ export const openApiSpec = {
     description:
       "Backend for the SIT Wordle Hackathon. The secret word never leaves the server: you send guesses, the API returns the colours. Every response has the shape `{ data, error, meta }`. CORS is open, so you can call it from an index.html on your disk. No API key needed.\n\nStarter kit and rules: https://github.com/molindemol/sitHackathonWordle",
   },
-  servers: [{ url: LIVE_URL, description: "Production" }, { url: "http://localhost:3000", description: "Local (npm run dev)" }],
+  servers: [{ url: LIVE_URL, description: "Production" }, { url: VERCEL_URL, description: "Production (Vercel address, same API)" }, { url: "http://localhost:3000", description: "Local (npm run dev)" }],
   tags: [
     { name: "Game", description: "Get a game, send guesses" },
     { name: "Words", description: "Word list checks" },

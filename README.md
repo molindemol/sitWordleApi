@@ -1,3 +1,5 @@
+<img src="assets/banner.png" alt="SIT Wordle API banner" width="100%">
+
 # SIT Wordle API
 
 Backend for the [SIT Wordle Hackathon](https://github.com/molindemol/sitHackathonWordle): the word of the day, the guess check and a small leaderboard as a JSON API. Teams that pick version B build their frontend against this.

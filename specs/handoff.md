@@ -11,7 +11,7 @@ metadata:
   sources: 
     - /home/walt/work/sitWordleApi/specs/handoff.md
   originSessionId: 3ef97080-cb40-4d33-bea8-25ae96b16c74
-  modified: 2026-09-09T12:47:01.509Z
+  modified: 2026-09-09T13:00:33.904Z
 ---
 
 # Handoff: sitWordleApi (2026-09-09)
@@ -20,7 +20,7 @@ metadata:
 Backend voor versie B van de SIT Wordle Hackathon (vr 11 sep 2026): woord van de dag, gokcontrole, leaderboard als JSON-API, deploybaar op Vercel. Aparte repo naast het startpakket sitHackathonWordle.
 
 ## Git-stand
-Machine laptop (WalterNoot-LAP, WSL). Repo /home/walt/work/sitWordleApi, branch main, 8 commits t/m "docs: test report, gates 4 and 5 approved" (na 3af2b6e), GEEN remote (Thijmen maakt de GitHub repo zelf, classifier blokkeert gh repo create).
+Machine laptop (WalterNoot-LAP, WSL). Repo /home/walt/work/sitWordleApi, branch main, HEAD 7296882 = origin/main (git@github.com:molindemol/sitWordleApi.git, door Thijmen aangemaakt en gepusht op 9 sep), ahead 0 behind 0.
 
 ## Status
 AF T/M FASE 5: gates 0 t/m 5 APPROVED, T001-T009 DONE, reviewer ronde 2 APPROVED. Gate 6 Deploy bewust PENDING (Thijmen: "je hoeft niet meteen te deployen"). Geen Supabase (Thijmen: "doe zonder supabase maak het simpel"), scores in-memory.
@@ -47,7 +47,6 @@ AF T/M FASE 5: gates 0 t/m 5 APPROVED, T001-T009 DONE, reviewer ronde 2 APPROVED
 Geen voor de code. Deploy en GitHub-repo zijn aan Thijmen.
 
 ## Volgende stappen
-1. Thijmen: `gh repo create molindemol/sitWordleApi --public --source=. --remote=origin --push` in de repo-map.
 3. Thijmen: Vercel import, env GAME_SECRET zetten, domein wordle.svsit.nl. Daarna `BASE_URL=https://wordle.svsit.nl npm run smoke`.
 4. Op de dag: overweeg de API lokaal te draaien voor een stabiel leaderboard (in-memory op Vercel kan resetten).
 

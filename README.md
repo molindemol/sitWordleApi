@@ -54,6 +54,10 @@ Scores are kept in the memory of the running server, per day. That keeps the pro
 
 For the hackathon the reliable setup is to run the API on the host's laptop in the room (`npm run dev`) and share that address, or to treat the Vercel leaderboard as best effort. Everything else can stay on Vercel.
 
+## Reference client
+
+`examples/wordleClient.html` is a complete version B frontend in one file: grid, keyboard, colouring via the API, practice games, score submission and the leaderboard. Open it from disk; add `?api=http://localhost:3000` to point it at a local backend. It is for the crew (demo, mentor fallback, beamer leaderboard), not for the starter kit.
+
 ## How it works
 
 - `lib/game.ts`: word of the day is `HMAC-SHA256(GAME_SECRET, "daily:" + date)` modulo the answer list. Game ids are `base64url(payload).base64url(signature)`, verified with a timing-safe compare.

@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wordle on the SIT API</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap">
+  <style>
+    /* Reference client for version B. Same stack as the students: one HTML file, plain JS, fetch.
+       Open it from disk. Add ?api=http://localhost:3000 to point it at a local backend. */
+    :root {
+      --bg: #09090b;
+      --panel: #16161a;
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --border: #3a3a44;
+      --correct: #22c55e;
+      --present: #f29e18;
+      --absent: #3a3a44;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "JetBrains Mono", "Courier New", monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+      gap: 20px;
+    }
+    h1 { margin: 0; font-size: 28px; letter-spacing: 4px; text-transform: uppercase; }
+    h2 { margin: 0 0 8px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+    .status { margin: 4px 0 0; color: var(--muted); font-size: 13px; min-height: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(5, 56px); gap: 6px; }
+    .tile {
+      width: 56px; height: 56px;
+      border: 2px solid var(--border);
+      display: grid; place-items: center;
+      font-size: 26px; font-weight: 700; text-transform: uppercase;
+      transition: transform 120ms ease;
+    }
+    .tile.filled { border-color: var(--muted); }
+    .tile.correct { background: var(--correct); border-color: var(--correct); color: #052e16; }
+    .tile.present { background: var(--present); border-color: var(--present); color: #1f1300; }
+    .tile.absent { background: var(--absent); border-color: var(--absent); color: var(--muted); }
+    .row.shake { animation: shake 320ms; }
+    @keyframes shake {
+      20% { transform: translateX(-6px); } 40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
+    }
+    .row { display: contents; }
+    .message { min-height: 22px; margin: 0; font-size: 15px; }
+    .message.error { color: var(--danger); }
+    .message.win { color: var(--correct); }
+    .actions { display: flex; gap: 10px; }
+    button {
+      font: inherit; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+      background: var(--panel); color: var(--text); border: 1px solid var(--border);
+      padding: 10px 16px; cursor: pointer;
+    }
+    button:hover { border-color: var(--muted); }
+    .board { width: 300px; background: var(--panel); border: 1px solid var(--border); padding: 16px; }
+    .board ol { margin: 0; padding-left: 22px; font-size: 13px; line-height: 1.8; }
+    .board li span { color: var(--muted); }
+    .board .empty { color: var(--muted); font-size: 13px; margin: 0; }
+    footer { color: var(--muted); font-size: 12px; }
+    footer code { color: var(--text); }
+    @media (prefers-reduced-motion: reduce) { .row.shake { animation: none; } .tile { transition: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Wordle</h1>
+    <p class="status" id="status">Loading today's game...</p>
+  </header>
+
+  <div class="grid" id="grid" aria-label="guess grid"></div>
+  <p class="message" id="message" role="status"></p>
+
+  <div class="actions">
+    <button id="practiceButton" type="button">Practice game</button>
+    <button id="todayButton" type="button">Today's game</button>
+  </div>
+
+  <section class="board">
+    <h2>Leaderboard today</h2>
+    <ol id="leaderboard"></ol>
+    <p class="empty" id="leaderboardEmpty" hidden>No scores yet.</p>
+  </section>
+
+  <footer>API: <code id="apiUrl"></code>. Type letters, Backspace and Enter.</footer>
+
+  <script>
+    // ---- config -------------------------------------------------------------
+    const API = new URLSearchParams(location.search).get("api") || "https://wordle.svsit.nl";
+    document.getElementById("apiUrl").textContent = API;
+
+    // ---- one helper for every API call --------------------------------------
+    // Every response has the shape { data, error, meta }. On an error, data is null and
+    // error is a sentence, so we throw that sentence and show it to the player.
+    async function api(path, options = {}) {
+      const response = await fetch(`${API}${path}`, {
+        method: options.method || "GET",
+        headers: { "Content-Type": "application/json" },
+        body: options.body ? JSON.stringify(options.body) : undefined,
+      });
+      const { data, error, meta } = await response.json();
+      if (error) throw new Error(error);
+      return { data, meta };
+    }
+
+    // ---- game state ---------------------------------------------------------
+    const game = { id: null, wordLength: 5, maxGuesses: 6, row: 0, current: "", done: true, startedAt: 0, mode: "today" };
+
+    const grid = document.getElementById("grid");
+    const message = document.getElementById("message");
+    const status = document.getElementById("status");
+
+    function say(text, kind = "") {
+      message.textContent = text;
+      message.className = `message ${kind}`.trim();
+    }
+
+    function buildGrid() {
+      grid.innerHTML = "";
+      grid.style.gridTemplateColumns = `repeat(${game.wordLength}, 56px)`;
+      for (let r = 0; r < game.maxGuesses; r += 1) {
+        const row = document.createElement("div");
+        row.className = "row";
+        row.dataset.row = String(r);
+        for (let c = 0; c < game.wordLength; c += 1) {
+          const tile = document.createElement("div");
+          tile.className = "tile";
+          row.appendChild(tile);
+        }
+        grid.appendChild(row);
+      }
+    }
+
+    function tilesOfRow(r) {
+      return [...grid.querySelector(`.row[data-row="${r}"]`).children];
+    }
+
+    function renderCurrentRow() {
+      tilesOfRow(game.row).forEach((tile, i) => {
+        const letter = game.current[i] || "";
+        tile.textContent = letter;
+        tile.classList.toggle("filled", letter !== "");
+      });
+    }
+
+    // ---- start a game (today or practice) -----------------------------------
+    async function startGame(mode) {
+      game.mode = mode;
+      game.done = true;
+      say("");
+      status.textContent = "Loading...";
+      try {
+        const { data } = mode === "practice"
+          ? await api("/api/practice", { method: "POST" })
+          : await api("/api/game/today");
+        game.id = data.gameId;
+        game.wordLength = data.wordLength;
+        game.maxGuesses = data.maxGuesses;
+        game.row = 0;
+        game.current = "";
+        game.done = false;
+        game.startedAt = Date.now();
+        buildGrid();
+        status.textContent = mode === "practice" ? "Practice game, random word." : `Game of ${data.date}. Same word for everyone.`;
+      } catch (error) {
+        status.textContent = "Could not load a game.";
+        say(error.message, "error");
+      }
+    }
+
+    // ---- submit a guess -----------------------------------------------------
+    async function submitGuess() {
+      if (game.current.length !== game.wordLength) return say("Not enough letters", "error");
+      const rowElement = grid.querySelector(`.row[data-row="${game.row}"]`);
+      try {
+        const { data } = await api(`/api/game/${game.id}/guess`, { method: "POST", body: { guess: game.current } });
+        if (!data.valid) {
+          say("Not in the word list", "error");
+          rowElement.classList.remove("shake");
+          void rowElement.offsetWidth;
+          rowElement.classList.add("shake");
+          return;
+        }
+        tilesOfRow(game.row).forEach((tile, i) => tile.classList.add(data.result[i]));
+        game.row += 1;
+        game.current = "";
+        if (data.solved) return win();
+        if (game.row >= game.maxGuesses) {
+          game.done = true;
+          say("Out of guesses. The word stays secret, try a practice game.", "error");
+        } else {
+          say("");
+        }
+      } catch (error) {
+        say(error.message, "error");
+      }
+    }
+
+    async function win() {
+      game.done = true;
+      const guesses = game.row;
+      const timeMs = Date.now() - game.startedAt;
+      say(`Solved in ${guesses} ${guesses === 1 ? "guess" : "guesses"}.`, "win");
+      if (game.mode !== "today") return;
+      const teamName = window.prompt("Solved! Team name for the leaderboard:", "");
+      if (!teamName) return;
+      try {
+        const { data } = await api("/api/scores", { method: "POST", body: { teamName, guesses, timeMs } });
+        say(`Solved in ${guesses} guesses. You are number ${data.rank} today.`, "win");
+        loadLeaderboard();
+      } catch (error) {
+        say(error.message, "error");
+      }
+    }
+
+    // ---- keyboard -----------------------------------------------------------
+    document.addEventListener("keydown", (event) => {
+      if (game.done) return;
+      const key = event.key;
+      if (key === "Enter") return submitGuess();
+      if (key === "Backspace") {
+        game.current = game.current.slice(0, -1);
+        return renderCurrentRow();
+      }
+      if (/^[a-zA-Z]$/.test(key) && game.current.length < game.wordLength) {
+        game.current += key.toLowerCase();
+        renderCurrentRow();
+      }
+    });
+
+    // ---- leaderboard --------------------------------------------------------
+    async function loadLeaderboard() {
+      const list = document.getElementById("leaderboard");
+      const empty = document.getElementById("leaderboardEmpty");
+      try {
+        const { data } = await api("/api/scores/today");
+        list.innerHTML = "";
+        empty.hidden = data.length > 0;
+        for (const score of data) {
+          const item = document.createElement("li");
+          const seconds = Math.round(score.timeMs / 1000);
+          item.innerHTML = `${escapeHtml(score.teamName)} <span>${score.guesses} guesses, ${seconds}s</span>`;
+          list.appendChild(item);
+        }
+      } catch (error) {
+        empty.hidden = false;
+        empty.textContent = error.message;
+      }
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    // ---- wire up -------------------------------------------------------------
+    document.getElementById("practiceButton").addEventListener("click", () => startGame("practice"));
+    document.getElementById("todayButton").addEventListener("click", () => startGame("today"));
+    startGame("today");
+    loadLeaderboard();
+    setInterval(loadLeaderboard, 30000);
+  </script>
+</body>
+</html>

@@ -19,7 +19,7 @@ Elke taak max 30 min. Status: TODO, DOING, DONE, BLOCKED.
 - [x] T008 README (Engels, zelfde stijl als sitHackathonWordle: wat het is, endpoints, lokaal draaien, Vercel deploy met GAME_SECRET, beperking in-memory scores, lokaal draaien op de dag), scripts/smoke.mjs die alle endpoints tegen een draaiende server aanroept en faalt bij afwijking van het contract. AC: smoke groen tegen `next dev`. _Boundary: README.md, scripts/_ _Depends: T007_ 25 min.
 
 ## Test
-- [ ] T009 Testfase: tsc, vitest met coverage, next build, smoke tegen `next start`, review-verdict door verse reviewer. Output specs/testReport.md. _Boundary: specs/testReport.md_ _Depends: T008_ 30 min.
+- [x] T009 Testfase: tsc, vitest met coverage, next build, smoke tegen `next start`, review-verdict door verse reviewer. Output specs/testReport.md. _Boundary: specs/testReport.md_ _Depends: T008_ 30 min.
 
 ## Implementation Notes
 (vullen tijdens het werk)
@@ -28,3 +28,4 @@ Elke taak max 30 min. Status: TODO, DOING, DONE, BLOCKED.
 - T004: gameId-payload wordt na de handtekening ook op vorm gecheckt (index binnen de antwoordenlijst), anders kan een geldig getekende maar rare payload answerAt laten throwen.
 - T007: rate limit zit als 1 helper (lib/guard.ts) in elke api-route, niet in middleware, zodat de 429 ook de envelope en CORS headers heeft.
 - T008: smoke.mjs draait tegen elke BASE_URL, ook straks tegen Vercel.
+- T009: reviewer vond het practice-index lek dat de unit-tests misten (tests checkten handtekening, niet de leesbaarheid van het payload). Les: bij getekende tokens altijd een test die het payload decodeert en de velden opsomt.

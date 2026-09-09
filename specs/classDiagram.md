@@ -19,7 +19,6 @@ classDiagram
     +isValidWord(word) boolean
     +answerAt(index) string
     +answerCount() number
-    +randomAnswerIndex() number
   }
   class CheckGuess {
     +checkGuess(guess, answer) LetterStatus[]

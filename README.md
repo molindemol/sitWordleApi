@@ -81,6 +81,10 @@ npm run type-check     # tsc
 npm run build          # next build
 ```
 
+## Credits
+
+Built by [Thijmen Walter](https://github.com/molindemol) for SIT Event Loop, the events committee of study association SIT.
+
 ## License
 
 Internal tooling of study association SIT. Free to reuse and adapt.

@@ -2,6 +2,8 @@
 
 Backend for the [SIT Wordle Hackathon](https://github.com/molindemol/sitHackathonWordle): the word of the day, the guess check and a small leaderboard as a JSON API. Teams that pick version B build their frontend against this.
 
+Live: **https://sit-wordle-api.vercel.app** (wordle.svsit.nl follows once the DNS is set).
+
 The secret word never leaves the server. The word of the day follows from the date and a secret, and every game id is signed, so there is nothing to store except scores. No database.
 
 ## Endpoints
@@ -44,7 +46,7 @@ npm run smoke
    ```
    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
    ```
-3. Deploy. Point `wordle.svsit.nl` at the project under Domains.
+3. Deploy. Point `wordle.svsit.nl` at the project under Domains (svsit.nl lives in another Vercel team, so either transfer the project there or verify the domain with the TXT record Vercel shows).
 
 Changing `GAME_SECRET` changes the word of the day and invalidates every game id that is out there, so set it once.
 

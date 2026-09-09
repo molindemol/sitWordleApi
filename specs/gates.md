@@ -10,7 +10,7 @@
 | -> Analyze gate | APPROVED | Claude (requirements, design en tasks consistent; US04/US05 gebruiken in-memory store conform design) | 2026-09-09 |
 | 4. Implement | APPROVED | Claude (T001-T008 done, reviewer ronde 1 CHANGES_REQUESTED op practice-index lek, fix 3af2b6e, ronde 2 APPROVED) | 2026-09-09 |
 | 5. Test | APPROVED | Claude (testReport.md: tsc 0, vitest 51/51 met 88 procent, build schoon, smoke 16/16 plus 429-check; lint/lighthouse/a11y/bundle/mobile/i18n n.v.t. of gemotiveerd) | 2026-09-09 |
-| 6. Deploy | PENDING (bewust) | Thijmen 9 sep: "je hoeft niet meteen te deployen". Repo Vercel-klaar, README heeft de stappen | - |
+| 6. Deploy | APPROVED | Claude (opdracht Thijmen 9 sep 15:30 "deploy de backend naar vercel": preview via vercel curl gecheckt, productie https://sit-wordle-api.vercel.app smoke 16/16, error scan leeg; domein wordle.svsit.nl open, zie deployLog.md) | 2026-09-09 |
 | 7. Content | PENDING | - | - |
 | 8. Video | PENDING | - | - |
 | 9. Launch | PENDING | - | - |

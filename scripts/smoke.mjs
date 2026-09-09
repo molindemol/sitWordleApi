@@ -75,6 +75,12 @@ async function main() {
   check("GET /api/scores/today lists max 10 with meta.total", board.status === 200 && Array.isArray(board.json.data) && board.json.data.length <= 10 && Number.isInteger(board.json.meta?.total));
   check("our score is on the board", Array.isArray(board.json?.data) && board.json.data.some((row) => row.teamName === team));
 
+  const spec = await call("GET", "/openapi.json");
+  check("GET /openapi.json is an OpenAPI 3.1 spec with 7 paths", spec.status === 200 && typeof spec.json?.openapi === "string" && spec.json.openapi.startsWith("3.1") && Object.keys(spec.json.paths ?? {}).length === 7);
+  const docs = await fetch(`${BASE}/docs`, { headers: AUTH_HEADERS });
+  const docsHtml = await docs.text();
+  check("GET /docs is the SIT-styled HTML reference", docs.status === 200 && (docs.headers.get("content-type") ?? "").includes("text/html") && docsHtml.includes("SIT Wordle API docs") && docsHtml.includes("/openapi.json"));
+
   console.log(failures === 0 ? "\nsmoke: all checks passed" : `\nsmoke: ${failures} check(s) FAILED`);
   process.exit(failures === 0 ? 0 : 1);
 }

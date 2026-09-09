@@ -2,7 +2,7 @@
 
 Backend for the [SIT Wordle Hackathon](https://github.com/molindemol/sitHackathonWordle): the word of the day, the guess check and a small leaderboard as a JSON API. Teams that pick version B build their frontend against this.
 
-Live: **https://sit-wordle-api.vercel.app** (wordle.svsit.nl follows once the DNS is set).
+Live: **https://sit-wordle-api.vercel.app** (wordle.svsit.nl follows once the DNS is set). Interactive docs with a try-it panel: **https://sit-wordle-api.vercel.app/docs**, raw spec at `/openapi.json`.
 
 The secret word never leaves the server. The word of the day follows from the date and a secret, and every game id is signed, so there is nothing to store except scores. No database.
 
@@ -19,6 +19,8 @@ Every response has the same shape: `{ "data": ..., "error": null, "meta": null }
 | `GET` | `/api/scores/today` | Top 10 of today, `meta.total` has the count | `[ { teamName, guesses, timeMs } ]` |
 | `POST` | `/api/practice` | Starts a practice game with a random word | `{ gameId, wordLength, maxGuesses }` |
 | `GET` | `/` | Lists the endpoints | |
+| `GET` | `/docs` | Interactive API reference (OpenAPI 3.1, Scalar) in the SIT house style | HTML |
+| `GET` | `/openapi.json` | The OpenAPI spec | JSON |
 
 Status codes: `400` bad input, `404` unknown or forged `gameId`, `429` more than 60 requests per minute from one IP, `500` our fault.
 A guess that is not in the word list is not an error: `valid` is `false`, `result` is `null`, HTTP 200.
@@ -65,6 +67,7 @@ For the hackathon the reliable setup is to run the API on the host's laptop in t
 - `lib/game.ts`: word of the day is `HMAC-SHA256(GAME_SECRET, "daily:" + date)` modulo the answer list. Game ids are `base64url(payload).base64url(signature)`, verified with a timing-safe compare.
 - `lib/checkGuess.ts`: two passes, greens first, then yellows from what is left, so double letters colour like real Wordle.
 - `lib/rateLimit.ts`: sliding window of 60 per minute per IP, in memory.
+- `lib/openapi.ts`: the OpenAPI spec as one TypeScript object, served by `/openapi.json` and rendered by `/docs`.
 - `data/validWords.ts`: 14,855 valid guesses from [tabatkins/wordle-list](https://github.com/tabatkins/wordle-list) (MIT). `data/answers.ts`: 5,665 more common words (Knuth's sgb-words, intersected with the guess list) that can be the answer.
 - Dates are in Europe/Amsterdam.
 

@@ -19,6 +19,10 @@
 - US12 GET / geeft een JSON-overzicht van de endpoints met link naar API.md.
 - US13 Scores staan in het geheugen van de server (geen database). README legt uit dat het leaderboard op Vercel kan resetten en dat lokaal draaien op de dag de stabiele route is.
 
+### Should (toegevoegd 9 sep, Thijmen: "kan je die docs mooi maken zoals swagger")
+- US15 Als team wil ik op GET /docs een interactieve API-referentie zien (Swagger-achtig, OpenAPI 3.1) met alle endpoints, request- en responsevoorbeelden en een try-it knop, zodat ik niet in een markdown-bestand hoef te zoeken.
+- US16 Als tooling wil ik GET /openapi.json kunnen ophalen als geldige OpenAPI 3.1 spec.
+
 ### Could
 - US14 Ongeldige gok: result null, valid false, HTTP 200 (geen error, want het is normaal spelverloop).
 

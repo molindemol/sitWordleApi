@@ -50,6 +50,7 @@ describe("GET /", () => {
     const body = await (await getRoot()).json();
     expect(body.data.name).toMatch(/Wordle/);
     expect(body.data.endpoints.length).toBeGreaterThanOrEqual(6);
-    expect(body.data.docs).toContain("github.com/molindemol/sitHackathonWordle");
+    expect(body.data.docs).toBe("/docs");
+    expect(body.data.starterKit).toContain("github.com/molindemol/sitHackathonWordle");
   });
 });

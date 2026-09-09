@@ -16,7 +16,8 @@ export function GET(): Promise<Response> {
     ok({
       name: "SIT Wordle API",
       endpoints: ENDPOINTS,
-      docs: "https://github.com/molindemol/sitHackathonWordle/blob/main/API.md",
+      docs: "/docs",
+      starterKit: "https://github.com/molindemol/sitHackathonWordle",
     }),
   );
 }

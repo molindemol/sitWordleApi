@@ -26,6 +26,17 @@ describe("OpenAPI spec", () => {
     }
   });
 
+  test("documents the full leaderboard 503 on POST /api/scores", () => {
+    expect(openApiSpec.paths["/api/scores"]?.post?.responses["503"]).toBeTruthy();
+  });
+
+  test("pins the Scalar script with an integrity hash", async () => {
+    const html = await (await getDocs()).text();
+    expect(html).toMatch(/@scalar\/api-reference@\d+\.\d+\.\d+"/);
+    expect(html).toContain('integrity="sha384-');
+    expect(html).toContain('crossorigin="anonymous"');
+  });
+
   test("lists the live server", () => {
     expect(openApiSpec.servers.map((s) => s.url)).toContain("https://sit-wordle-api.vercel.app");
   });

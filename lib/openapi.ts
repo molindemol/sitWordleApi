@@ -125,6 +125,7 @@ const paths: Paths = {
         "200": { description: "Rank", content: { "application/json": { schema: envelope("#/components/schemas/Rank"), example: { data: { rank: 2 }, error: null, meta: null } } } },
         "400": errorResponse("Invalid body", `guesses must be a whole number from 1 to ${MAX_GUESSES}`),
         "429": rateLimited,
+        "503": errorResponse("Today's leaderboard is full (1000 scores), the score was not saved", "the leaderboard for today is full"),
       },
     },
   },
@@ -183,7 +184,7 @@ export const openApiSpec = {
       },
       Overview: {
         type: "object",
-        properties: { name: { type: "string" }, endpoints: { type: "array", items: { type: "object" } }, docs: { type: "string" } },
+        properties: { name: { type: "string" }, endpoints: { type: "array", items: { type: "object" } }, docs: { type: "string" }, starterKit: { type: "string" } },
       },
       GameInfo: {
         type: "object",
@@ -203,7 +204,7 @@ export const openApiSpec = {
       GuessRequest: {
         type: "object",
         required: ["guess"],
-        properties: { guess: { type: "string", minLength: WORD_LENGTH, maxLength: WORD_LENGTH, pattern: "^[a-zA-Z]{5}$", example: "apple" } },
+        properties: { guess: { type: "string", minLength: WORD_LENGTH, maxLength: WORD_LENGTH, pattern: `^[a-zA-Z]{${WORD_LENGTH}}$`, example: "apple" } },
       },
       LetterStatus: { type: "string", enum: ["correct", "present", "absent"], description: "correct = green, present = yellow, absent = grey" },
       GuessResult: {

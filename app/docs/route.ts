@@ -2,12 +2,15 @@ export const dynamic = "force-dynamic";
 
 // Interactive API reference in the SIT house style. Scalar renders the OpenAPI spec from
 // /openapi.json, Swagger-style with a working "try it" panel, restyled with SIT colours and fonts.
+// The CDN script is pinned to one version with an SRI hash. Bump both together: node scripts in the repo history
+// or `curl -sL https://cdn.jsdelivr.net/npm/@scalar/api-reference@<v> | openssl dgst -sha384 -binary | openssl base64 -A`.
 const PAGE = `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SIT Wordle API docs</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2309090b'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-weight='700' font-size='20' fill='%23f29e18'%3E%7B%7D%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <style>
     :root {
@@ -69,7 +72,7 @@ const PAGE = `<!doctype html>
   <div class="sit-rule" aria-hidden="true"></div>
   <noscript><p class="fallback">SIT Wordle API. This page needs JavaScript. The raw spec is at <a href="/openapi.json">/openapi.json</a>.</p></noscript>
   <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.68.0" integrity="sha384-ayGz8N+NChlUEfR0zr5Zy3T6Q4lhcdiASJNoshS6+vxV56ZE300qfWNBjj9pqsLN" crossorigin="anonymous"></script>
   <script>
     Scalar.createApiReference("#app", {
       url: "/openapi.json",

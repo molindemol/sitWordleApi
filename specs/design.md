@@ -62,7 +62,7 @@ Zie classDiagram.md.
 ## API-docs (T010)
 - lib/openapi.ts: de OpenAPI 3.1 spec als TypeScript-object (info, servers met de live URL, 6 endpoints plus root, schema's Envelope, LetterStatus, GameInfo, GuessResult, Score). Eén bron, geen generator.
 - app/openapi.json/route.ts: GET geeft de spec als application/json met CORS.
-- app/docs/route.ts: GET geeft een HTML-pagina in SIT-huisstijl (Thijmen 9 sep: "maak het sit design achtige swagger page voor endpoints"): vaste kopbalk met het {SIT} woordmerk (gouden accolades #F29E18, drie kruisjes rood #EF4444, groen #22C55E, blauw #3B82F6, zoals de banner), titel in Big Shoulders Display, JetBrains Mono voor de rest, achtergrond #09090B. Daaronder Scalar API Reference (CDN) op /openapi.json met een custom CSS-thema in dezelfde kleuren (accent goud, radius 4px, geen client-knop). Scalar rendert OpenAPI net als Swagger UI maar strakker en met een werkende try-it. Fonts via Google Fonts, geen system fonts.
+- app/docs/route.ts: GET geeft een HTML-pagina in SIT-huisstijl (Thijmen 9 sep: "maak het sit design achtige swagger page voor endpoints"): vaste kopbalk met het echte SIT-logo "On Dark" uit de Figma brandkit (public/sitLogo.svg, geexporteerd uit de banner-groep 85:2 in het promo-bestand, achtergrondvlakken gestript; ook favicon), op verzoek Thijmen 9 sep in plaats van een CSS-woordmerk, titel in Big Shoulders Display, JetBrains Mono voor de rest, achtergrond #09090B. Daaronder Scalar API Reference (CDN) op /openapi.json met een custom CSS-thema in dezelfde kleuren (accent goud, radius 4px, geen client-knop). Scalar rendert OpenAPI net als Swagger UI maar strakker en met een werkende try-it. Fonts via Google Fonts, geen system fonts.
 - GET / verwijst in `docs` naar /docs.
 
 ## State

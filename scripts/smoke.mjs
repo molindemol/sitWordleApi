@@ -1,8 +1,10 @@
 // End-to-end smoke test against a running server. Fails loudly when a response
 // does not match the contract in sitHackathonWordle/API.md.
 // Usage: BASE_URL=http://localhost:3000 node scripts/smoke.mjs
+// Protected Vercel preview: vercel env run -- node scripts/smoke.mjs (sends the local OIDC token as a header).
 
 const BASE = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+const AUTH_HEADERS = process.env.VERCEL_OIDC_TOKEN ? { "x-vercel-trusted-oidc-idp-token": process.env.VERCEL_OIDC_TOKEN } : {};
 let failures = 0;
 
 function check(label, condition, detail = "") {
@@ -17,7 +19,7 @@ function check(label, condition, detail = "") {
 async function call(method, path, body) {
   const response = await fetch(`${BASE}${path}`, {
     method,
-    headers: { "Content-Type": "application/json", Origin: "http://localhost:5500" },
+    headers: { "Content-Type": "application/json", Origin: "http://localhost:5500", ...AUTH_HEADERS },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const json = response.status === 204 ? null : await response.json();
@@ -33,7 +35,7 @@ async function main() {
   check("GET / is an envelope with endpoints", isEnvelope(root.json) && Array.isArray(root.json.data.endpoints));
   check("CORS header present", root.headers.get("access-control-allow-origin") === "*");
 
-  const preflight = await fetch(`${BASE}/api/game/today`, { method: "OPTIONS", headers: { Origin: "http://localhost:5500", "Access-Control-Request-Method": "GET" } });
+  const preflight = await fetch(`${BASE}/api/game/today`, { method: "OPTIONS", headers: { Origin: "http://localhost:5500", "Access-Control-Request-Method": "GET", ...AUTH_HEADERS } });
   check("OPTIONS preflight is 204 with methods", preflight.status === 204 && (preflight.headers.get("access-control-allow-methods") ?? "").includes("POST"));
 
   const today = await call("GET", "/api/game/today");
@@ -71,7 +73,7 @@ async function main() {
 
   const board = await call("GET", "/api/scores/today");
   check("GET /api/scores/today lists max 10 with meta.total", board.status === 200 && Array.isArray(board.json.data) && board.json.data.length <= 10 && Number.isInteger(board.json.meta?.total));
-  check("our score is on the board", board.json.data.some((row) => row.teamName === team));
+  check("our score is on the board", Array.isArray(board.json?.data) && board.json.data.some((row) => row.teamName === team));
 
   console.log(failures === 0 ? "\nsmoke: all checks passed" : `\nsmoke: ${failures} check(s) FAILED`);
   process.exit(failures === 0 ? 0 : 1);

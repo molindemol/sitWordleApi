@@ -28,7 +28,7 @@ LIVE EN AF T/M FASE 6. Gates 0 t/m 6 APPROVED, T001-T010 DONE, reviewer 2x APPRO
 - data/validWords.ts (14855, tabatkins MIT), data/answers.ts (5665, Knuth sgb doorsneden)
 - public/sitLogo.svg (brandkit-logo transparant), public/favicon.svg (logo op zwart)
 - assets/banner.png (README-banner WORDLE API, Figma frame 94:2) en assets/socialPreview.png (1280x640, frame 93:2), README begint met de banner
-- examples/wordleClient.html (complete versie B frontend voor de crew, standaard op wordle.svsit.nl, ?api= voor lokaal)
+- examples/wordleClient.html (complete versie B frontend voor de crew in SIT-huisstijl: brandkit-logo en favicon geladen van wordle.svsit.nl, Big Shoulders Display, vier-kleurenlijn, gouden primaire knop, leaderboard-paneel; standaard op wordle.svsit.nl, ?api= voor lokaal; focus-bug gefixt)
 - scripts/smoke.mjs (18 checks, BASE_URL, OIDC-header voor previews), tests/ (11 files, 59 tests)
 - specs/ compleet: intake, constitution, requirements, design, classDiagram, tasks, gates, testReport, deployLog, handoff
 

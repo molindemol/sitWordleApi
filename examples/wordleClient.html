@@ -113,7 +113,7 @@
     }
 
     // ---- game state ---------------------------------------------------------
-    const game = { id: null, wordLength: 5, maxGuesses: 6, row: 0, current: "", done: true, startedAt: 0, mode: "today" };
+    const game = { id: null, wordLength: 5, maxGuesses: 6, row: 0, current: "", done: true, busy: false, startedAt: 0, mode: "today" };
 
     const grid = document.getElementById("grid");
     const message = document.getElementById("message");
@@ -179,8 +179,10 @@
 
     // ---- submit a guess -----------------------------------------------------
     async function submitGuess() {
+      if (game.busy) return;
       if (game.current.length !== game.wordLength) return say("Not enough letters", "error");
       const rowElement = grid.querySelector(`.row[data-row="${game.row}"]`);
+      game.busy = true;
       try {
         const { data } = await api(`/api/game/${game.id}/guess`, { method: "POST", body: { guess: game.current } });
         if (!data.valid) {
@@ -202,6 +204,8 @@
         }
       } catch (error) {
         say(error.message, "error");
+      } finally {
+        game.busy = false;
       }
     }
 
@@ -224,8 +228,10 @@
 
     // ---- keyboard -----------------------------------------------------------
     document.addEventListener("keydown", (event) => {
-      if (game.done) return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (game.done || game.busy) return;
       const key = event.key;
+      if (key === "Enter" || key === "Backspace" || /^[a-zA-Z]$/.test(key)) event.preventDefault();
       if (key === "Enter") return submitGuess();
       if (key === "Backspace") {
         game.current = game.current.slice(0, -1);
@@ -262,8 +268,8 @@
     }
 
     // ---- wire up -------------------------------------------------------------
-    document.getElementById("practiceButton").addEventListener("click", () => startGame("practice"));
-    document.getElementById("todayButton").addEventListener("click", () => startGame("today"));
+    document.getElementById("practiceButton").addEventListener("click", (event) => { event.currentTarget.blur(); startGame("practice"); });
+    document.getElementById("todayButton").addEventListener("click", (event) => { event.currentTarget.blur(); startGame("today"); });
     startGame("today");
     loadLeaderboard();
     setInterval(loadLeaderboard, 30000);

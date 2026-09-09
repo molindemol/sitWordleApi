@@ -123,8 +123,9 @@ const PAGE = `<!doctype html>
           --scalar-font-code: "JetBrains Mono", "Courier New", monospace;
         }
         /* Only two clients remain, so the "More" tab reads as the JavaScript tab */
-        .client-libraries-text-more { font-size: 0; }
-        .client-libraries-text-more::after { content: "JavaScript"; font-size: 14px; line-height: 16px; }
+        .client-libraries-text-more { font-size: 0 !important; color: transparent !important; }
+        .client-libraries-text-more::after { content: "JavaScript"; font-size: 14px !important; line-height: 16px; color: var(--scalar-color-1); }
+        .client-libraries__select:not(.client-libraries__active) .client-libraries-text-more::after { color: var(--scalar-color-3); }
         /* Scalar extras that students do not need */
         .dark-mode [class*="mcp"], .dark-mode a[href*="scalar.com/mcp"], .dark-mode .scalar-app-header, .dark-mode [class*="toolbar"] { display: none !important; }
         .dark-mode h1, .dark-mode h2, .dark-mode .section-header, .dark-mode .t-editor__heading, .dark-mode .introduction-section h1 {

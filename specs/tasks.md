@@ -22,7 +22,7 @@ Elke taak max 30 min. Status: TODO, DOING, DONE, BLOCKED.
 - [x] T009 Testfase: tsc, vitest met coverage, next build, smoke tegen `next start`, review-verdict door verse reviewer. Output specs/testReport.md. _Boundary: specs/testReport.md_ _Depends: T008_ 30 min.
 
 ## Docs
-- [ ] T010 OpenAPI spec plus docs-pagina. lib/openapi.ts (spec-object), app/openapi.json/route.ts, app/docs/route.ts (Scalar via CDN), root `docs` naar /docs, README en API.md linken naar /docs. AC: tests: spec heeft openapi 3.1.x, precies de 7 paths, elke operation heeft een 200-response met de envelope; GET /openapi.json geeft JSON met CORS; GET /docs geeft 200 text/html met een script dat /openapi.json laadt; spec-servers bevat de live URL. Visueel: /docs in Chrome geopend, endpoints zichtbaar, try-it op /api/game/today werkt. _Boundary: lib/openapi.ts, app/openapi.json/**, app/docs/**, app/route.ts (docs-link), tests/, README.md_ _Depends: T009_ 30 min.
+- [x] T010 OpenAPI spec plus docs-pagina. lib/openapi.ts (spec-object), app/openapi.json/route.ts, app/docs/route.ts (Scalar via CDN), root `docs` naar /docs, README en API.md linken naar /docs. AC: tests: spec heeft openapi 3.1.x, precies de 7 paths, elke operation heeft een 200-response met de envelope; GET /openapi.json geeft JSON met CORS; GET /docs geeft 200 text/html met een script dat /openapi.json laadt; spec-servers bevat de live URL. Visueel: /docs in Chrome geopend, endpoints zichtbaar, try-it op /api/game/today werkt. _Boundary: lib/openapi.ts, app/openapi.json/**, app/docs/**, app/route.ts (docs-link), tests/, README.md_ _Depends: T009_ 30 min.
 
 ## Implementation Notes
 (vullen tijdens het werk)
@@ -32,3 +32,4 @@ Elke taak max 30 min. Status: TODO, DOING, DONE, BLOCKED.
 - T007: rate limit zit als 1 helper (lib/guard.ts) in elke api-route, niet in middleware, zodat de 429 ook de envelope en CORS headers heeft.
 - T008: smoke.mjs draait tegen elke BASE_URL, ook straks tegen Vercel.
 - T009: reviewer vond het practice-index lek dat de unit-tests misten (tests checkten handtekening, niet de leesbaarheid van het payload). Les: bij getekende tokens altijd een test die het payload decodeert en de velden opsomt.
+- T010: reviewer ronde 1 CHANGES_REQUESTED (503 van vol leaderboard ontbrak in de spec, Scalar-script zonder versiepin en SRI), gefixt in 5d5dcc0, ronde 2 APPROVED. Scalar gepind op 1.68.0 met sha384-hash; bumpen = versie en hash samen aanpassen (commando in app/docs/route.ts). Scalar-ruis (toolbar, Ask AI, MCP-knop) uit via config plus CSS. Visueel bewezen in Chrome: SIT-kop, 7 operaties, try-it op /api/game/today gaf 200.

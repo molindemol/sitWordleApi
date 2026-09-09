@@ -14,6 +14,9 @@ Opdracht Thijmen: "deploy de backend naar vercel".
 | Error scan | `vercel logs --level error --since 1h`: geen logs |
 | Commit | scripts/smoke.mjs OIDC-header commit plus deze log, zie git log |
 
+## 2026-09-09 17:35, tweede productie-deploy (T010 docs)
+`vercel deploy --prod` na commit 5d5dcc0: deployment https://sit-wordle-l3l4qglkw-walter-noot.vercel.app, alias https://sit-wordle-api.vercel.app. Smoke tegen productie 18/18 inclusief /openapi.json en /docs. Rollback: vorige productie-deployment sit-wordle-jhgsstmci (commit 0f512a4 minus docs) via `vercel rollback`.
+
 ## Domein wordle.svsit.nl: OPEN
 `vercel domains add wordle.svsit.nl sit-wordle-api` geeft 403 "Not authorized to use wordle.svsit.nl": svsit.nl is in een ander Vercel-team geclaimd (de SIT-site). Nameservers van svsit.nl staan bij Hostnet (ns01/ns02.hostnet.nl). Twee routes voor Thijmen:
 1. Project verplaatsen naar het Vercel-team waar svsit.nl al staat (Settings > General > Transfer), daarna het subdomein toevoegen. Dan regelt Vercel de DNS-instructie voor Hostnet (CNAME wordle naar cname.vercel-dns.com of A 76.76.21.21).

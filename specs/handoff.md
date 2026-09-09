@@ -20,10 +20,10 @@ metadata:
 Backend voor versie B van de SIT Wordle Hackathon (vr 11 sep 2026): woord van de dag, gokcontrole, leaderboard als JSON-API, deploybaar op Vercel. Aparte repo naast het startpakket sitHackathonWordle.
 
 ## Git-stand
-Machine laptop (WalterNoot-LAP, WSL). Repo /home/walt/work/sitWordleApi, branch main, HEAD 7296882 = origin/main (git@github.com:molindemol/sitWordleApi.git, door Thijmen aangemaakt en gepusht op 9 sep), ahead 0 behind 0.
+Machine laptop (WalterNoot-LAP, WSL). Repo /home/walt/work/sitWordleApi, branch main, HEAD 7296882 = origin/main (git@github.com:molindemol/sitWordleApi.git, door Thijmen aangemaakt en gepusht op 9 sep), ahead 0 behind 0. Branch protection op main sinds 9 sep 16:20 via API en teruggelezen: PR met 1 approval, stale reviews vervallen, conversaties opgelost, geen force push of delete, admins mogen bypassen, geen status checks (zelfde als sitHackathonClassic). Let op: directe pushes naar main gaan vanaf nu via PR of admin-bypass.
 
 ## Status
-AF T/M FASE 5: gates 0 t/m 5 APPROVED, T001-T009 DONE, reviewer ronde 2 APPROVED. Gate 6 Deploy bewust PENDING (Thijmen: "je hoeft niet meteen te deployen"). Geen Supabase (Thijmen: "doe zonder supabase maak het simpel"), scores in-memory.
+LIVE OP VERCEL MET DOCS (9 sep 17:35): gates 0 t/m 6 APPROVED, T001-T010 DONE. Productie https://sit-wordle-api.vercel.app (Vercel team walter-noot, project sit-wordle-api, env GAME_SECRET, secret lokaal in ~/.config/cloudly/sit-wordle.env). Smoke tegen productie 18/18. /docs is een Swagger-achtige API-referentie in SIT-huisstijl (Scalar 1.68.0 gepind met SRI op /openapi.json), op verzoek Thijmen. Domein wordle.svsit.nl OPEN: svsit.nl zit in een ander Vercel-team en DNS bij Hostnet, zie specs/deployLog.md. Geen Supabase (Thijmen: "doe zonder supabase maak het simpel"), scores in-memory.
 
 ## Gewijzigde files (deze sessie)
 - specs/: intake, constitution, requirements, design, classDiagram, tasks, gates
@@ -48,9 +48,10 @@ AF T/M FASE 5: gates 0 t/m 5 APPROVED, T001-T009 DONE, reviewer ronde 2 APPROVED
 Geen voor de code. Deploy is aan Thijmen.
 
 ## Volgende stappen
-1. Thijmen: Vercel import, env GAME_SECRET zetten, domein wordle.svsit.nl. Daarna `BASE_URL=https://wordle.svsit.nl npm run smoke`.
+1. Thijmen: wordle.svsit.nl koppelen: project naar het Vercel-team van svsit.nl verplaatsen of domein via TXT verifiëren, dan CNAME wordle naar cname.vercel-dns.com bij Hostnet. Daarna `BASE_URL=https://wordle.svsit.nl npm run smoke`.
 2. Op de dag: overweeg de API lokaal te draaien voor een stabiel leaderboard (in-memory op Vercel kan resetten).
 
 ## Key context
 - Contract is API.md in sitHackathonWordle; beide repos moeten gelijk blijven.
+- Pushen naar main gaat met admin-bypass (melding "Bypassed rule violations" is geen fout). Deploy: `vercel deploy --prod --yes --scope walter-noot` in de repo-map, daarna smoke tegen de live URL.
 - Datum is Europe/Amsterdam; GAME_SECRET wijzigen verandert het woord van de dag en maakt alle gameIds ongeldig.

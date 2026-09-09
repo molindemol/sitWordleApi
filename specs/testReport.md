@@ -39,3 +39,9 @@ ISSUES: none
 ```
 
 Doc-nit (randomAnswerIndex nog in classDiagram.md) direct opgeruimd.
+
+## Addendum T010 (docs, 9 sep 17:30)
+- tsc 0 errors, vitest 59/59 (nieuwe tests: spec 3.1 met 7 paths, 200 met envelope per operation, 503 op scores, live server, /openapi.json JSON met CORS, /docs HTML met fonts, gepind Scalar-script met SRI), next build schoon (routes /docs en /openapi.json).
+- Smoke uitgebreid met /openapi.json en /docs: lokaal 18/18, productie https://sit-wordle-api.vercel.app 18/18.
+- Chrome op next start: SIT-kop gerenderd, sidebar 7 operaties, geen console-fouten (favicon inline zodat de 404 weg is), gepind script geladen met integrity, try-it op GET /api/game/today gaf 200 met gameId en wordLength.
+- Reviewer: ronde 1 CHANGES_REQUESTED (2 issues), ronde 2 APPROVED.

@@ -82,7 +82,7 @@ const PAGE = `<!doctype html>
         shell: ["httpie", "wget"],
         node: true, ruby: true, php: true, python: true, c: true, clojure: true, csharp: true, dart: true,
         go: true, http: true, java: true, kotlin: true, objc: true, ocaml: true, powershell: true, r: true,
-        swift: true, rust: true, fsharp: true,
+        swift: true, rust: true, fsharp: true, julia: true, elixir: true, haskell: true, lua: true, perl: true, scala: true, zig: true,
       },
       agent: { disabled: true },
       defaultOpenAllTags: true,

@@ -23,6 +23,8 @@ Opdracht Thijmen: "deploy de backend naar vercel".
 2. Of in dit team domein-eigendom bewijzen met de TXT-record die Vercel bij het toevoegen via het dashboard toont (_vercel TXT op svsit.nl in Hostnet), daarna CNAME wordle naar cname.vercel-dns.com.
 Tot dan is de live URL https://sit-wordle-api.vercel.app. API.md, README en de referentie-client verwijzen daarnaar.
 
+Hostnet-stappen (uit helpdesk.hostnet.nl "DNS wijzigen", 9 sep): Mijn Hostnet > Diensten > bij svsit.nl het menu met 3 puntjes > DNS wijzigen > record toevoegen > opslaan. Records: CNAME met naam `wordle` en waarde `cname.vercel-dns.com`; plus de TXT `_vercel` die het Vercel-dashboard toont bij Project > Settings > Domains > Add (ownership verification, want svsit.nl is door een ander team geclaimd). Hostnet: CNAME alleen op subdomeinen, propagatie 2 tot 24 uur, "Versie terugzetten" rechtsboven als rollback. Via CLI lukt de domain add niet (403 zonder TXT, `vercel api` accepteert de body niet).
+
 ## Rollback
 Vorige werkende productie: geen (eerste deploy). Bij problemen: `vercel rollback` naar een eerdere deployment of `vercel deploy --prod` vanaf een eerdere commit. GAME_SECRET niet wijzigen, anders verandert het woord van de dag en zijn uitgedeelde gameIds ongeldig.
 

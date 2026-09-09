@@ -44,11 +44,11 @@ AF T/M FASE 5: gates 0 t/m 5 APPROVED, T001-T009 DONE, reviewer ronde 2 APPROVED
 - context-mode hook blokkeert curl en inline fetch in Bash, ook in een wachtlus. Wachten op een poort via bash /dev/tcp, HTTP-checks via een scriptbestand (scripts/smoke.mjs).
 
 ## Blokkades
-Geen voor de code. Deploy en GitHub-repo zijn aan Thijmen.
+Geen voor de code. Deploy is aan Thijmen.
 
 ## Volgende stappen
-3. Thijmen: Vercel import, env GAME_SECRET zetten, domein wordle.svsit.nl. Daarna `BASE_URL=https://wordle.svsit.nl npm run smoke`.
-4. Op de dag: overweeg de API lokaal te draaien voor een stabiel leaderboard (in-memory op Vercel kan resetten).
+1. Thijmen: Vercel import, env GAME_SECRET zetten, domein wordle.svsit.nl. Daarna `BASE_URL=https://wordle.svsit.nl npm run smoke`.
+2. Op de dag: overweeg de API lokaal te draaien voor een stabiel leaderboard (in-memory op Vercel kan resetten).
 
 ## Key context
 - Contract is API.md in sitHackathonWordle; beide repos moeten gelijk blijven.

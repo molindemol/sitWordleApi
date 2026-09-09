@@ -10,7 +10,7 @@ const PAGE = `<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SIT Wordle API docs</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2309090b'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='monospace' font-weight='700' font-size='20' fill='%23f29e18'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="/sitLogo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <style>
     :root {
@@ -35,13 +35,8 @@ const PAGE = `<!doctype html>
       border-bottom: 1px solid var(--sit-border);
       font-family: "JetBrains Mono", "Courier New", monospace;
     }
-    .sit-mark { display: flex; flex-direction: column; align-items: center; line-height: 1; text-decoration: none; }
-    .sit-wordmark { font-family: "Big Shoulders Display", Impact, sans-serif; font-weight: 800; font-size: 30px; letter-spacing: 2px; color: var(--sit-text); }
-    .sit-wordmark .brace { color: var(--sit-gold); }
-    .sit-crosses { display: flex; gap: 3px; margin-top: 2px; font-size: 9px; font-weight: 700; }
-    .sit-crosses span:nth-child(1) { color: var(--sit-red); }
-    .sit-crosses span:nth-child(2) { color: var(--sit-green); }
-    .sit-crosses span:nth-child(3) { color: var(--sit-blue); }
+    .sit-mark { display: flex; align-items: center; text-decoration: none; }
+    .sit-logo { height: 36px; width: auto; display: block; }
     .sit-divider { width: 1px; height: 28px; background: var(--sit-border); }
     .sit-title { font-family: "Big Shoulders Display", Impact, sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 3px; text-transform: uppercase; }
     .sit-kicker { color: var(--sit-muted); font-size: 12px; margin-left: 4px; }
@@ -57,8 +52,7 @@ const PAGE = `<!doctype html>
 <body>
   <header class="sit-header">
     <a class="sit-mark" href="https://svsit.nl" aria-label="Study association SIT">
-      <span class="sit-wordmark"><span class="brace">{</span>SIT<span class="brace">}</span></span>
-      <span class="sit-crosses" aria-hidden="true"><span>x</span><span>x</span><span>x</span></span>
+      <img class="sit-logo" src="/sitLogo.svg" alt="SIT logo" width="81" height="36">
     </a>
     <span class="sit-divider" aria-hidden="true"></span>
     <span class="sit-title">Wordle API</span>

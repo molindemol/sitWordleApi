@@ -36,6 +36,7 @@ AF T/M FASE 5: gates 0 t/m 5 APPROVED, T001-T009 DONE, reviewer ronde 2 APPROVED
 - Next 16.3.4, tsc 0 errors, vitest 51/51, coverage 88,6 procent statements, next build schoon (7 dynamic routes).
 - Smoke tegen `next start -p 3100`: 16/16 checks groen, 61e request van 1 IP geeft 429.
 - Woord verlaat de server nooit, gameId is HMAC-getekend en op vorm gecheckt. Practice-woord volgt uit HMAC over de nonce (reviewer-fix 3af2b6e), payload bevat alleen t en n.
+- examples/wordleClient.html (commit 746355e): complete versie B frontend in 1 bestand voor de crew (demo, mentor-fallback, beamer). Live E2E in Chrome vanaf file:// tegen next start op 3100: today-game geladen, apple gekleurd, aaaaa geeft "Not in the word list" plus shake, winnend woord (lokaal berekend uit GAME_SECRET) gaf 5x correct, prompt teamnaam, score als nummer 3 op het leaderboard, practice-knop geeft een practice-gameId. Bewust NIET in het startpakket.
 
 ## Wat niet werkte / lessen
 - Reviewer ronde 1: practice gameId droeg de antwoordindex leesbaar in base64, samen met de publieke answers.ts was dat het woord. Gefixt, unit-test decodeert nu het payload. Les: bij getekende tokens altijd testen wat er leesbaar in zit, niet alleen de handtekening.

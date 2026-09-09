@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { dailyGameId, dailyIndex, parseGameId, practiceGameId, signGameId, wordForPayload } from "@/lib/game";
+import { dailyGameId, dailyIndex, parseGameId, practiceGameId, practiceIndex, signGameId, wordForPayload } from "@/lib/game";
 import { answerAt, answerCount } from "@/lib/words";
 
 const SECRET = "test-secret";
@@ -26,15 +26,15 @@ describe("game ids", () => {
 
   test("sign and parse round-trip for daily and practice payloads", () => {
     const daily = { t: "daily" as const, d: "2026-09-11" };
-    const practice = { t: "practice" as const, i: 42, n: "abc" };
+    const practice = { t: "practice" as const, n: "abc" };
     expect(parseGameId(signGameId(daily, SECRET), SECRET)).toEqual(daily);
     expect(parseGameId(signGameId(practice, SECRET), SECRET)).toEqual(practice);
   });
 
   test("rejects tampered payloads, wrong secrets and garbage", () => {
-    const id = signGameId({ t: "practice", i: 1, n: "x" }, SECRET);
+    const id = signGameId({ t: "practice", n: "x" }, SECRET);
     const [payload, signature] = id.split(".");
-    const forged = `${Buffer.from(JSON.stringify({ t: "practice", i: 2, n: "x" })).toString("base64url")}.${signature}`;
+    const forged = `${Buffer.from(JSON.stringify({ t: "practice", n: "y" })).toString("base64url")}.${signature}`;
     expect(parseGameId(forged, SECRET)).toBeNull();
     expect(parseGameId(id, "other")).toBeNull();
     expect(parseGameId("garbage", SECRET)).toBeNull();
@@ -43,8 +43,17 @@ describe("game ids", () => {
   });
 
   test("rejects a correctly signed payload with the wrong shape", () => {
-    const weird = signGameId({ t: "practice", i: -1, n: "x" }, SECRET);
+    const weird = signGameId({ t: "practice", n: "" } as never, SECRET);
     expect(parseGameId(weird, SECRET)).toBeNull();
+    const tooLong = signGameId({ t: "practice", n: "x".repeat(33) }, SECRET);
+    expect(parseGameId(tooLong, SECRET)).toBeNull();
+  });
+
+  test("a practice gameId does not carry the answer index in its payload", () => {
+    const { gameId } = practiceGameId(SECRET);
+    const decoded = JSON.parse(Buffer.from(gameId.split(".")[0] ?? "", "base64url").toString("utf8")) as Record<string, unknown>;
+    expect(Object.keys(decoded).sort()).toEqual(["n", "t"]);
+    expect(practiceIndex(decoded.n as string, SECRET)).not.toBe(practiceIndex(decoded.n as string, "other"));
   });
 
   test("dailyGameId resolves to the daily word, practiceGameId to its own index", () => {

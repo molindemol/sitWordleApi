@@ -13,7 +13,7 @@ Figma, designSystem.md, animations.md en componentMap.md: n.v.t. (headless JSON-
 - Woord van de dag: `index = HMAC_SHA256(GAME_SECRET, "daily:" + date) mod answers.length`. Date = YYYY-MM-DD in Europe/Amsterdam.
 - gameId = base64url(JSON payload) + "." + base64url(HMAC_SHA256(GAME_SECRET, payloadB64)).
   - daily payload: `{ "t": "daily", "d": "2026-09-11" }`
-  - practice payload: `{ "t": "practice", "i": <answerIndex>, "n": <random nonce> }`
+  - practice payload: `{ "t": "practice", "n": <random nonce> }`, index = `HMAC_SHA256(GAME_SECRET, "practice:" + nonce) mod answers.length`. De index staat dus nooit in het gameId (reviewer-bevinding 9 sep).
 - Guess-route verifieert de handtekening (timing-safe), leest het payload en herleidt het woord. Onbekend of vervalst gameId: 404.
 
 ## Gokcontrole (twee passen)

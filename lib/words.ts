@@ -1,4 +1,3 @@
-import { randomInt } from "node:crypto";
 import { answers } from "@/data/answers";
 import { validWords } from "@/data/validWords";
 import { WORD_LENGTH } from "@/lib/types";
@@ -23,8 +22,4 @@ export function answerAt(index: number): string {
   const word = answers[index];
   if (word === undefined) throw new RangeError(`answer index ${index} out of range`);
   return word;
-}
-
-export function randomAnswerIndex(): number {
-  return randomInt(0, answers.length);
 }

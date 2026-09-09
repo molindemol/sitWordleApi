@@ -1,7 +1,7 @@
 export type LetterStatus = "correct" | "present" | "absent";
 
 export type DailyPayload = { t: "daily"; d: string };
-export type PracticePayload = { t: "practice"; i: number; n: string };
+export type PracticePayload = { t: "practice"; n: string };
 export type GamePayload = DailyPayload | PracticePayload;
 
 export type Envelope<T> = {

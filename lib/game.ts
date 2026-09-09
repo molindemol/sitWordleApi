@@ -1,7 +1,7 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { getGameSecret } from "@/lib/env";
 import type { GamePayload } from "@/lib/types";
-import { answerAt, answerCount, randomAnswerIndex } from "@/lib/words";
+import { answerAt, answerCount } from "@/lib/words";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -9,11 +9,18 @@ function hmac(secret: string, message: string): Buffer {
   return createHmac("sha256", secret).update(message).digest();
 }
 
+function indexFor(secret: string, message: string): number {
+  return hmac(secret, message).readUIntBE(0, 6) % answerCount();
+}
+
 /** Deterministic answer index for a date: same date plus same secret is always the same word. */
 export function dailyIndex(date: string, secret: string = getGameSecret()): number {
-  const digest = hmac(secret, `daily:${date}`);
-  const value = digest.readUIntBE(0, 6);
-  return value % answerCount();
+  return indexFor(secret, `daily:${date}`);
+}
+
+/** Practice words follow from the nonce plus the secret, so the game id never carries the answer index. */
+export function practiceIndex(nonce: string, secret: string = getGameSecret()): number {
+  return indexFor(secret, `practice:${nonce}`);
 }
 
 export function signGameId(payload: GamePayload, secret: string = getGameSecret()): string {
@@ -26,9 +33,7 @@ function isGamePayload(value: unknown): value is GamePayload {
   if (typeof value !== "object" || value === null) return false;
   const record = value as Record<string, unknown>;
   if (record.t === "daily") return typeof record.d === "string" && DATE_PATTERN.test(record.d);
-  if (record.t === "practice") {
-    return Number.isInteger(record.i) && (record.i as number) >= 0 && (record.i as number) < answerCount() && typeof record.n === "string";
-  }
+  if (record.t === "practice") return typeof record.n === "string" && record.n.length > 0 && record.n.length <= 32;
   return false;
 }
 
@@ -52,7 +57,7 @@ export function parseGameId(gameId: string, secret: string = getGameSecret()): G
 }
 
 export function wordForPayload(payload: GamePayload, secret: string = getGameSecret()): string {
-  return payload.t === "daily" ? answerAt(dailyIndex(payload.d, secret)) : answerAt(payload.i);
+  return payload.t === "daily" ? answerAt(dailyIndex(payload.d, secret)) : answerAt(practiceIndex(payload.n, secret));
 }
 
 export function dailyGameId(date: string, secret: string = getGameSecret()): string {
@@ -60,7 +65,6 @@ export function dailyGameId(date: string, secret: string = getGameSecret()): str
 }
 
 export function practiceGameId(secret: string = getGameSecret()): { gameId: string; index: number } {
-  const index = randomAnswerIndex();
-  const nonce = randomBytes(6).toString("base64url");
-  return { gameId: signGameId({ t: "practice", i: index, n: nonce }, secret), index };
+  const nonce = randomBytes(9).toString("base64url");
+  return { gameId: signGameId({ t: "practice", n: nonce }, secret), index: practiceIndex(nonce, secret) };
 }

@@ -6,11 +6,11 @@ classDiagram
     <<union>>
     t: "daily" | "practice"
     d: string (daily)
-    i: number (practice)
     n: string (practice)
   }
   class Game {
     +dailyIndex(date) number
+    +practiceIndex(nonce) number
     +signGameId(payload) string
     +parseGameId(id) GamePayload | null
     +wordForPayload(payload) string

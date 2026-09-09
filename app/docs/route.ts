@@ -10,7 +10,7 @@ const PAGE = `<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SIT Wordle API docs</title>
-  <link rel="icon" href="/sitLogo.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <style>
     :root {

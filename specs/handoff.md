@@ -12,7 +12,7 @@ metadata:
     - /home/walt/work/sitWordleApi/specs/deployLog.md
 ---
 
-# Handoff: sitWordleApi (2026-09-09, 18:00)
+# Handoff: sitWordleApi (2026-09-09, 18:30, sessie-einde)
 
 ## Doel
 Backend voor versie B van de SIT Wordle Hackathon (vr 11 sep 2026, 12:00-14:30): woord van de dag, gokcontrole, leaderboard als JSON-API met Swagger-achtige docs in SIT-huisstijl. Contract staat in API.md van het startpakket sitHackathonWordle.
@@ -27,6 +27,7 @@ LIVE EN AF T/M FASE 6. Gates 0 t/m 6 APPROVED, T001-T010 DONE, reviewer 2x APPRO
 - lib/ (types, env, date, http, checkGuess, words, game, rateLimit, scores, guard, openapi), app/route.ts, app/api/**, app/docs/route.ts, app/openapi.json/route.ts
 - data/validWords.ts (14855, tabatkins MIT), data/answers.ts (5665, Knuth sgb doorsneden)
 - public/sitLogo.svg (brandkit-logo transparant), public/favicon.svg (logo op zwart)
+- assets/banner.png (README-banner WORDLE API, Figma frame 94:2) en assets/socialPreview.png (1280x640, frame 93:2), README begint met de banner
 - examples/wordleClient.html (complete versie B frontend voor de crew, standaard op wordle.svsit.nl, ?api= voor lokaal)
 - scripts/smoke.mjs (18 checks, BASE_URL, OIDC-header voor previews), tests/ (11 files, 59 tests)
 - specs/ compleet: intake, constitution, requirements, design, classDiagram, tasks, gates, testReport, deployLog, handoff
@@ -44,9 +45,10 @@ LIVE EN AF T/M FASE 6. Gates 0 t/m 6 APPROVED, T001-T010 DONE, reviewer 2x APPRO
 - Classifier blokkeert gh repo create en secrets kopiëren via ssh; context-mode blokkeert curl en inline fetch in Bash (scripts als bestand draaien wel). pkill -f op "next-server" doodt de eigen shell, gebruik kill $(pgrep -f "next-serve[r]").
 
 ## Blokkades
-Geen.
+Social preview uploaden op GitHub kan alleen ingelogd via Settings > Social preview; de Chrome die ik aanstuur was niet ingelogd op GitHub (inlogpagina stond open, Thijmen logde niet meer in voor sessie-einde). Afbeeldingen staan klaar in assets/socialPreview.png van beide repo's.
 
 ## Volgende stappen
+0. Thijmen: social preview uploaden op beide repo's (Settings > Social preview > Edit > assets/socialPreview.png), of inloggen in de aangestuurde Chrome en het mij laten doen.
 1. Op de dag: `vercel logs https://wordle.svsit.nl --follow` op de laptop van de host; bij een resettend leaderboard de API lokaal draaien (`npm run dev`, GAME_SECRET uit ~/.config/cloudly/sit-wordle.env zodat gameIds gelijk blijven) en dat adres delen.
 2. Optioneel: null-MX op wordle.svsit.nl weghalen bij Hostnet, ESLint met @cloudly/config toevoegen (check 1 in testReport), fases 7-9 als het project blijft bestaan.
 
@@ -54,3 +56,4 @@ Geen.
 - Deploy: `vercel deploy --prod --yes --scope walter-noot` in de repo-map, daarna `BASE_URL=https://wordle.svsit.nl node scripts/smoke.mjs`. Preview-deploys staan achter Vercel Authentication, testen via `vercel curl`.
 - GAME_SECRET nooit wijzigen na het event begint: verandert het woord van de dag en maakt alle gameIds ongeldig.
 - Scalar bumpen = versie en sha384-hash samen aanpassen in app/docs/route.ts.
+- Speelmap voor Thijmen: C:\Users\Thijm\Desktop\wordleTest (WSL /mnt/c/Users/Thijm/Desktop/wordleTest) met play.html (kopie van examples/wordleClient.html, standaard wordle.svsit.nl), starter index.html plus words.js, API.md en README.txt. Aangemaakt 18:22, NIET in de browser geverifieerd (Chrome MCP herstartte). Chrome van de MCP draait in WSL, dus file:///mnt/c/... paden, geen C:\.

@@ -122,6 +122,9 @@ const PAGE = `<!doctype html>
           --scalar-font: "JetBrains Mono", "Courier New", monospace;
           --scalar-font-code: "JetBrains Mono", "Courier New", monospace;
         }
+        /* Only two clients remain, so the "More" tab reads as the JavaScript tab */
+        .client-libraries-text-more { font-size: 0; }
+        .client-libraries-text-more::after { content: "JavaScript"; font-size: 14px; line-height: 16px; }
         /* Scalar extras that students do not need */
         .dark-mode [class*="mcp"], .dark-mode a[href*="scalar.com/mcp"], .dark-mode .scalar-app-header, .dark-mode [class*="toolbar"] { display: none !important; }
         .dark-mode h1, .dark-mode h2, .dark-mode .section-header, .dark-mode .t-editor__heading, .dark-mode .introduction-section h1 {

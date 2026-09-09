@@ -3,43 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wordle on the SIT API</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap">
+  <title>SIT Wordle</title>
+  <link rel="icon" href="https://wordle.svsit.nl/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <style>
-    /* Reference client for version B. Same stack as the students: one HTML file, plain JS, fetch.
+    /* Reference client for version B in the SIT house style. Same stack as the students: one HTML file, plain JS, fetch.
        Open it from disk. Add ?api=http://localhost:3000 to point it at a local backend. */
     :root {
       --bg: #09090b;
       --panel: #16161a;
       --text: #fafafa;
       --muted: #a1a1aa;
-      --border: #3a3a44;
+      --border: #2a2a33;
+      --gold: #f29e18;
       --correct: #22c55e;
       --present: #f29e18;
       --absent: #3a3a44;
-      --danger: #ef4444;
+      --red: #ef4444;
+      --blue: #3b82f6;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "JetBrains Mono", "Courier New", monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 24px 16px 48px;
-      gap: 20px;
+    html, body { margin: 0; background: var(--bg); color: var(--text); }
+    body { font-family: "JetBrains Mono", "Courier New", monospace; min-height: 100vh; display: flex; flex-direction: column; }
+
+    .sit-header {
+      height: 64px; display: flex; align-items: center; gap: 20px; padding: 0 24px;
+      border-bottom: 1px solid var(--border);
     }
-    h1 { margin: 0; font-size: 28px; letter-spacing: 4px; text-transform: uppercase; }
-    h2 { margin: 0 0 8px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-    .status { margin: 4px 0 0; color: var(--muted); font-size: 13px; min-height: 18px; }
-    .grid { display: grid; grid-template-columns: repeat(5, 56px); gap: 6px; }
+    .sit-logo { height: 36px; width: auto; display: block; }
+    .sit-divider { width: 1px; height: 28px; background: var(--border); }
+    .sit-title { font-family: "Big Shoulders Display", Impact, sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 3px; text-transform: uppercase; margin: 0; }
+    .sit-kicker { color: var(--muted); font-size: 12px; }
+    .sit-links { margin-left: auto; display: flex; gap: 18px; font-size: 12px; }
+    .sit-links a { color: var(--muted); text-decoration: none; }
+    .sit-links a:hover { color: var(--gold); }
+    .sit-rule { height: 3px; background: linear-gradient(90deg, var(--gold) 0 25%, var(--red) 25% 50%, var(--correct) 50% 75%, var(--blue) 75%); }
+    @media (max-width: 720px) { .sit-kicker, .sit-links { display: none; } }
+
+    main { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 28px 16px 40px; }
+    .status { margin: 0; color: var(--muted); font-size: 13px; min-height: 18px; }
+    .status::before { content: "// "; color: var(--gold); }
+
+    .grid { display: grid; grid-template-columns: repeat(5, 58px); gap: 6px; }
+    .row { display: contents; }
     .tile {
-      width: 56px; height: 56px;
+      width: 58px; height: 58px;
       border: 2px solid var(--border);
       display: grid; place-items: center;
-      font-size: 26px; font-weight: 700; text-transform: uppercase;
+      font-family: "Big Shoulders Display", Impact, sans-serif; font-weight: 800; font-size: 34px; text-transform: uppercase;
       transition: transform 120ms ease;
     }
     .tile.filled { border-color: var(--muted); }
@@ -51,45 +62,64 @@
       20% { transform: translateX(-6px); } 40% { transform: translateX(6px); }
       60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
     }
-    .row { display: contents; }
+
     .message { min-height: 22px; margin: 0; font-size: 15px; }
-    .message.error { color: var(--danger); }
+    .message.error { color: var(--red); }
     .message.win { color: var(--correct); }
+
     .actions { display: flex; gap: 10px; }
     button {
-      font: inherit; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+      font: inherit; font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
       background: var(--panel); color: var(--text); border: 1px solid var(--border);
-      padding: 10px 16px; cursor: pointer;
+      padding: 10px 18px; cursor: pointer;
     }
-    button:hover { border-color: var(--muted); }
-    .board { width: 300px; background: var(--panel); border: 1px solid var(--border); padding: 16px; }
-    .board ol { margin: 0; padding-left: 22px; font-size: 13px; line-height: 1.8; }
+    button:hover { border-color: var(--gold); color: var(--gold); }
+    button.primary { background: var(--gold); border-color: var(--gold); color: #1f1300; }
+    button.primary:hover { background: #ffb03a; border-color: #ffb03a; color: #1f1300; }
+
+    .board { width: 320px; background: var(--panel); border: 1px solid var(--border); padding: 16px 18px; }
+    .board h2 { margin: 0 0 10px; font-family: "Big Shoulders Display", Impact, sans-serif; font-weight: 800; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
+    .board h2::before { content: "// "; color: var(--gold); }
+    .board ol { margin: 0; padding-left: 22px; font-size: 13px; line-height: 1.9; }
+    .board li::marker { color: var(--gold); }
     .board li span { color: var(--muted); }
     .board .empty { color: var(--muted); font-size: 13px; margin: 0; }
-    footer { color: var(--muted); font-size: 12px; }
+
+    footer { color: var(--muted); font-size: 12px; text-align: center; padding: 0 16px 24px; }
     footer code { color: var(--text); }
     @media (prefers-reduced-motion: reduce) { .row.shake { animation: none; } .tile { transition: none; } }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Wordle</h1>
-    <p class="status" id="status">Loading today's game...</p>
+  <header class="sit-header">
+    <a href="https://svsit.nl" aria-label="Study association SIT"><img class="sit-logo" src="https://wordle.svsit.nl/sitLogo.svg" alt="SIT logo" width="81" height="36"></a>
+    <span class="sit-divider" aria-hidden="true"></span>
+    <h1 class="sit-title">Wordle</h1>
+    <span class="sit-kicker">// wordle hackathon &middot; fri 11 sep 2026</span>
+    <nav class="sit-links">
+      <a href="https://wordle.svsit.nl/docs">api docs</a>
+      <a href="https://github.com/molindemol/sitHackathonWordle">starter kit</a>
+    </nav>
   </header>
+  <div class="sit-rule" aria-hidden="true"></div>
 
-  <div class="grid" id="grid" aria-label="guess grid"></div>
-  <p class="message" id="message" role="status"></p>
+  <main>
+    <p class="status" id="status">Loading today's game...</p>
 
-  <div class="actions">
-    <button id="practiceButton" type="button">Practice game</button>
-    <button id="todayButton" type="button">Today's game</button>
-  </div>
+    <div class="grid" id="grid" aria-label="guess grid"></div>
+    <p class="message" id="message" role="status"></p>
 
-  <section class="board">
-    <h2>Leaderboard today</h2>
-    <ol id="leaderboard"></ol>
-    <p class="empty" id="leaderboardEmpty" hidden>No scores yet.</p>
-  </section>
+    <div class="actions">
+      <button id="todayButton" class="primary" type="button">Today's game</button>
+      <button id="practiceButton" type="button">Practice game</button>
+    </div>
+
+    <section class="board">
+      <h2>Leaderboard today</h2>
+      <ol id="leaderboard"></ol>
+      <p class="empty" id="leaderboardEmpty" hidden>No scores yet.</p>
+    </section>
+  </main>
 
   <footer>API: <code id="apiUrl"></code>. Type letters, Backspace and Enter.</footer>
 

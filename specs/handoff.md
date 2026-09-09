@@ -39,6 +39,7 @@ LIVE EN AF T/M FASE 6. Gates 0 t/m 6 APPROVED, T001-T010 DONE, reviewer 2x APPRO
 - wordle.svsit.nl: TXT _vercel voor eigendom, 2 A-records (216.198.79.1, 64.29.17.1) bij Hostnet omdat een null-MX op die naam een CNAME blokkeerde.
 
 ## Wat niet werkte / lessen
+- Client-bug (Thijmen 9 sep, "words disappear" in practice): na een klik hield de Practice-knop focus, Enter activeerde de knop opnieuw terwijl de gok onderweg was, het antwoord kleurde daarna het verse lege grid (kleuren zonder letters). Fix in examples/wordleClient.html: knoppen blur na klik, preventDefault op spel-toetsen, input geblokkeerd zolang een gok onderweg is (game.busy). 5 practice-rondes met echte toetsen in Chrome groen, ook ongeldig woord plus Backspace. Kopie op Desktop\wordleTest\play.html bijgewerkt.
 - Reviewer ronde 1: practice-index stond leesbaar in het gameId; ronde 2 (T010): 503 ontbrak in de spec en CDN-script zonder pin. Beide gefixt, tests bewaken het.
 - Scalar's scoped CSS wint van gewone selectors, overrides hebben !important nodig. Scalar heeft geen instelling voor "featured" client-tabs.
 - Hostnet "dubbel CNAME" betekende een bestaand record van ander type op dezelfde naam. Zie LESSONS.md.
@@ -56,4 +57,4 @@ Social preview uploaden op GitHub kan alleen ingelogd via Settings > Social prev
 - Deploy: `vercel deploy --prod --yes --scope walter-noot` in de repo-map, daarna `BASE_URL=https://wordle.svsit.nl node scripts/smoke.mjs`. Preview-deploys staan achter Vercel Authentication, testen via `vercel curl`.
 - GAME_SECRET nooit wijzigen na het event begint: verandert het woord van de dag en maakt alle gameIds ongeldig.
 - Scalar bumpen = versie en sha384-hash samen aanpassen in app/docs/route.ts.
-- Speelmap voor Thijmen: C:\Users\Thijm\Desktop\wordleTest (WSL /mnt/c/Users/Thijm/Desktop/wordleTest) met play.html (kopie van examples/wordleClient.html, standaard wordle.svsit.nl), starter index.html plus words.js, API.md en README.txt. Aangemaakt 18:22, NIET in de browser geverifieerd (Chrome MCP herstartte). Chrome van de MCP draait in WSL, dus file:///mnt/c/... paden, geen C:\.
+- Speelmap voor Thijmen: C:\Users\Thijm\Desktop\wordleTest (WSL /mnt/c/Users/Thijm/Desktop/wordleTest) met play.html (kopie van examples/wordleClient.html, standaard wordle.svsit.nl), starter index.html plus words.js, API.md en README.txt. Aangemaakt 18:22, play.html na de focus-fix in Chrome geverifieerd met 5 practice-rondes. Chrome van de MCP draait in WSL, dus file:///mnt/c/... paden, geen C:\.
